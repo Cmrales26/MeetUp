@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,400;1,700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #18171c;
+}
+
+html {
+  font-family: "Poppins", sans-serif;
+}
+
+.app {
+  background-color: #18171c;
+  color: #fafafa;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+  color: #fafafa;
+}
+
+.Login {
+  min-height: 100vh;
+}
