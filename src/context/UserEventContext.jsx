@@ -1,5 +1,11 @@
 import { createContext, useContext, useState } from "react";
-import { JoinEvent, LeaveEvent, getEvent, getEvents } from "../api/user/user";
+import {
+  JoinEvent,
+  LeaveEvent,
+  getEvent,
+  getEvents,
+  getMyEvents,
+} from "../api/user/user";
 import Cookies from "universal-cookie";
 
 export const UserEventContext = createContext();
@@ -16,12 +22,22 @@ const cookies = new Cookies();
 
 export const UserEventsProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
-
+  const [myEvents, setMyEvents] = useState([]);
   const getEventsController = async () => {
     let token = cookies.get("token");
     try {
       const res = await getEvents(token);
       setEvents(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMyEventsController = async () => {
+    let token = cookies.get("token");
+    try {
+      const res = await getMyEvents(token);
+      setMyEvents(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -56,14 +72,17 @@ export const UserEventsProvider = ({ children }) => {
       console.log(error);
     }
   };
+
   return (
     <UserEventContext.Provider
       value={{
         events,
+        myEvents,
         getEventsController,
         getEventController,
         joinEventController,
         leaveEventController,
+        getMyEventsController,
       }}
     >
       {" "}

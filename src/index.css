@@ -41,7 +41,6 @@ input[type="password"] {
   }
 }
 
-/* Media query para celular */
 @media screen and (max-width: 480px) {
   .Events {
     grid-template-columns: repeat(1, 1fr);

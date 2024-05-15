@@ -5,6 +5,9 @@ export const LoginRequest = (data) => axios.post("/login/user", data);
 export const getEvents = (token) =>
   axios.get("/get/events", { headers: { Authorization: `Bearer ${token}` } });
 
+export const getMyEvents = (token) =>
+  axios.get("/get/MyEvent", { headers: { Authorization: `Bearer ${token}` } });
+
 export const getEvent = (token, id) =>
   axios.get(`/get/event/${id}`, {
     headers: { Authorization: `Bearer ${token}` },

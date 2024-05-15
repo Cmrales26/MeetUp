@@ -16,17 +16,18 @@ const EventCard = ({ event }) => {
         textDecoration: "none",
       }}
       width={"400px"}
+      key={event.id}
     >
-      <Box>
-        <img
+      <Box key={event.id}>
+        {/* <img
           src="https://images.ctfassets.net/spoqsaf9291f/4iLLoSt2nvqWtAfanxBdEP/c6fb3d1680c155138a08f2f138a2812f/template-gallery-relaunch__1_.png"
           alt="Template Image"
           width={"100%"}
           height={"200px"}
           style={{ objectFit: "cover" }}
-        />
+        /> */}
       </Box>
-      <Typography variant="body1" fontWeight={"bold"} px={2}>
+      <Typography variant="body1" fontWeight={"bold"} p={2}>
         {event.name}
       </Typography>
       <Box display={"flex"} justifyContent={"space-between"} px={2}>

@@ -1,17 +1,31 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserEvents } from "../context/UserEventContext";
 import { Box, Button, Typography } from "@mui/material";
 import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { useUserAuth } from "../context/AuthContex";
+import Navbar from "../components/Navbar";
 const Event = () => {
   let { eventId } = useParams();
   const [event, setEvent] = useState([]);
   const [isJoin, setIsJoin] = useState(false);
 
+  const navigate = useNavigate();
+
+  const { isAuth, loading } = useUserAuth();
   const { getEventController, joinEventController, leaveEventController } =
     useUserEvents();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!isAuth) {
+        navigate("/");
+      }
+    }
+  }, [isAuth, loading]);
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -50,7 +64,13 @@ const Event = () => {
 
   return (
     <Box>
-      <Box className="EventHeader" p={4} sx={{ backgroundColor: "#1c172e" }}>
+      <Navbar where={"Event"} />
+      <Box
+        className="EventHeader"
+        px={4}
+        py={6}
+        sx={{ backgroundColor: "#1c172e" }}
+      >
         <Typography variant="h3" fontWeight={"bold"}>
           {event.name}
         </Typography>
