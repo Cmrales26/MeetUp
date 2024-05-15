@@ -1,8 +1,7 @@
 import { Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Navbar = ({ user, isAuth }) => {
-  console.log(user)
+const Navbar = () => {
   return (
     <Box display={"flex"} justifyContent={"space-between"} p={2}>
       <Box>

@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #18171c;
+  background-color: #231e36;
 }
 
 html {
@@ -15,7 +15,7 @@ html {
 }
 
 .app {
-  background-color: #18171c;
+  background-color: #231e36;
   color: #fafafa;
 }
 
@@ -27,4 +27,23 @@ input[type="password"] {
 
 .Login {
   min-height: 100vh;
+}
+
+.Events {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+@media screen and (max-width: 768px) {
+  .Events {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Media query para celular */
+@media screen and (max-width: 480px) {
+  .Events {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }

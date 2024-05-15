@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./screens/Login";
 import { UserAuthProvider } from "./context/AuthContex";
+import { UserEventsProvider } from "./context/UserEventContext";
 import Home from "./screens/Home";
+import Event from "./screens/Event";
 
 function App() {
   const [selectedNav, setSelectedNav] = useState("HOME");
@@ -11,12 +13,20 @@ function App() {
       <main className="content">
         {/* User ROUTES */}
         <UserAuthProvider>
-          <Routes>
-            <Route path="/" element={<Login setSelectedNav={setSelectedNav} />} />
-            <Route path="/login" element={<Login setSelectedNav={setSelectedNav} />} />
-            <Route path="/home" element={<Home />} />
-            {/* <Route path="/contact" element={<Contact />} /> */}
-          </Routes>
+          <UserEventsProvider>
+            <Routes>
+              <Route
+                path="/"
+                element={<Login setSelectedNav={setSelectedNav} />}
+              />
+              <Route
+                path="/login"
+                element={<Login setSelectedNav={setSelectedNav} />}
+              />
+              <Route path="/home" element={<Home />} />
+              <Route path="/event/:eventId" element={<Event />} />
+            </Routes>
+          </UserEventsProvider>
         </UserAuthProvider>
       </main>
     </div>
