@@ -35,6 +35,10 @@ input[type="password"] {
   gap: 30px;
 }
 
+.MuiFormLabel-root {
+  color: "white" !important;
+}
+
 @media screen and (max-width: 768px) {
   .Events {
     grid-template-columns: repeat(2, 1fr);

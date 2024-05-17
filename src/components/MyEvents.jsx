@@ -23,6 +23,7 @@ const MyEvents = ({ myEvents, limit }) => {
           </Typography>
           <Typography variant="button">
             <Link
+              to={"/Events"}
               style={{
                 color: "#1565c0",
                 cursor: "pointer",

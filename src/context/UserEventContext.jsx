@@ -29,7 +29,7 @@ export const UserEventsProvider = ({ children }) => {
       const res = await getEvents(token);
       setEvents(res.data);
     } catch (error) {
-      console.log(error);
+      return error.response;
     }
   };
 
@@ -39,7 +39,7 @@ export const UserEventsProvider = ({ children }) => {
       const res = await getMyEvents(token);
       setMyEvents(res.data);
     } catch (error) {
-      console.log(error);
+      return error.response;
     }
   };
 
@@ -49,7 +49,7 @@ export const UserEventsProvider = ({ children }) => {
       const res = await getEvent(token, id);
       return res.data[0];
     } catch (error) {
-      console.log(error);
+      return error.response;
     }
   };
 
@@ -59,7 +59,7 @@ export const UserEventsProvider = ({ children }) => {
       const res = await JoinEvent(eventId, token);
       return res;
     } catch (error) {
-      console.log(error);
+      return error.response;
     }
   };
 
@@ -69,7 +69,7 @@ export const UserEventsProvider = ({ children }) => {
       const res = await LeaveEvent(eventId, token);
       return res;
     } catch (error) {
-      console.log(error);
+      return error.response;
     }
   };
 

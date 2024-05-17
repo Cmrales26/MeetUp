@@ -49,7 +49,7 @@ const Home = () => {
 
         <Box className="AllEvents" mt={5}>
           <Typography variant="h5" fontWeight={"bold"} my={2}>
-            All Events
+            Some Events
           </Typography>
           <Box className="Events">
             {events.slice(0, 6).map((event) => (

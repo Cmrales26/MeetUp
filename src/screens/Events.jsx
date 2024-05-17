@@ -1,11 +1,24 @@
 import { Box, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useUserEvents } from "../context/UserEventContext";
+import { useUserAuth } from "../context/AuthContex";
 import EventCard from "../components/EventCard";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Events = () => {
   const { getEventsController, events } = useUserEvents();
+  const { isAuth, loading } = useUserAuth();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!isAuth) {
+        navigate("/");
+      }
+    }
+  }, [isAuth, loading]);
 
   useEffect(() => {
     getEventsController();

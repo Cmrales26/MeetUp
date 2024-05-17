@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { LoginRequest } from "../api/user/user";
-import { LoginBusinessRequest } from "../api/Business/business";
+import { CreateRequest, LoginRequest } from "../api/user/user";
+import {
+  CreateBusinessRequest,
+  LoginBusinessRequest,
+} from "../api/Business/business";
 import { CheckLogin, LogOut } from "../api/auth/auth";
 import Cookies from "universal-cookie";
 
@@ -66,7 +69,6 @@ export const UserAuthProvider = ({ children }) => {
       const res = await LoginRequest(user);
       setUser(res.data);
       setIsAuth(true);
-      console.log(res.data.token);
       cookies.set("token", res.data.token);
       return res;
     } catch (error) {
@@ -88,12 +90,29 @@ export const UserAuthProvider = ({ children }) => {
     }
   };
 
+  const Create = async (data) => {
+    try {
+      const res = await CreateRequest(data);
+      return res;
+    } catch (error) {
+      setError(error.response.data.message);
+      return error.response.data.message;
+    }
+  };
+
+  const CreateBusiness = async (data) => {
+    try {
+      const res = await CreateBusinessRequest(data);
+      return res;
+    } catch (error) {
+      setError(error.response.data.message);
+      return error.response.data.message;
+    }
+  };
+
   const LogOutController = async () => {
     try {
       const res = await LogOut();
-
-      console.log(res);
-
       if (res.status === 200) {
         cookies.remove("token");
         setUser("");
@@ -102,7 +121,8 @@ export const UserAuthProvider = ({ children }) => {
       }
       return res.status;
     } catch (error) {
-      console.log(error);
+      console.error(error.message);
+      return error.message;
     }
   };
   return (
@@ -115,6 +135,8 @@ export const UserAuthProvider = ({ children }) => {
         signUp,
         signUpBusiness,
         LogOutController,
+        Create,
+        CreateBusiness,
       }}
     >
       {" "}

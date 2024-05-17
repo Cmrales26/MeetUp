@@ -4,8 +4,10 @@ import { useUserEvents } from "../context/UserEventContext";
 import { Box, Button, Typography } from "@mui/material";
 import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useUserAuth } from "../context/AuthContex";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
 import Navbar from "../components/Navbar";
 const Event = () => {
   let { eventId } = useParams();
@@ -30,11 +32,15 @@ const Event = () => {
     const fetchEvent = async () => {
       try {
         const resEvent = await getEventController(eventId);
+
+        if (resEvent.status === 404) {
+          navigate("/404", { state: { ErrorId: 2, redirect: "/events" } });
+          return;
+        }
         setEvent(resEvent);
         setIsJoin(resEvent.UserInEvent);
-        // TODO: do a better alert when event in url don't exist
       } catch (error) {
-        console.error("Error fetching event:", error);
+        console.log("Error fetching event:", error);
       }
     };
 
@@ -112,6 +118,7 @@ const Event = () => {
                 onClick={() => {
                   LeaveEvent(eventId);
                 }}
+                startIcon={<EventBusyIcon />}
               >
                 Leave Event
               </Button>
@@ -122,6 +129,7 @@ const Event = () => {
                 }}
                 fullWidth
                 variant="contained"
+                startIcon={<EventAvailableIcon />}
               >
                 Join Event
               </Button>

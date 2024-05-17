@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContex";
 import Navbar from "../components/Navbar";
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useUserEvents } from "../context/UserEventContext";
-import EventCard from "../components/EventCard";
 import CakeIcon from "@mui/icons-material/Cake";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import EditIcon from "@mui/icons-material/Edit";

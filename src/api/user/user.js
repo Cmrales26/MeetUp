@@ -2,6 +2,8 @@ import axios from "../axios";
 
 export const LoginRequest = (data) => axios.post("/login/user", data);
 
+export const CreateRequest = (data) => axios.post("/CreateAccount/user", data);
+
 export const getEvents = (token) =>
   axios.get("/get/events", { headers: { Authorization: `Bearer ${token}` } });
 

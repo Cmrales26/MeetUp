@@ -3,9 +3,24 @@ import Navbar from "../components/Navbar";
 import { useUserEvents } from "../context/UserEventContext";
 import { useEffect } from "react";
 import MyEvents from "../components/MyEvents";
+import { useNavigate } from "react-router-dom";
+import { useUserAuth } from "../context/AuthContex";
 
 const MyEventsScreen = () => {
   const { getMyEventsController, myEvents } = useUserEvents();
+
+  const { isAuth, loading } = useUserAuth();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!isAuth) {
+        navigate("/");
+      }
+    }
+  }, [isAuth, loading]);
+
   useEffect(() => {
     getMyEventsController();
   }, []);
