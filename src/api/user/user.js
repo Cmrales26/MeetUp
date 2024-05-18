@@ -4,6 +4,12 @@ export const LoginRequest = (data) => axios.post("/login/user", data);
 
 export const CreateRequest = (data) => axios.post("/CreateAccount/user", data);
 
+export const UpdateRequest = (data, UserId) =>
+  axios.patch(`/edit/user/${UserId}`, data);
+
+export const ChangePasswordRequest = (data) =>
+  axios.post(`/change/user/pass`, data);
+
 export const getEvents = (token) =>
   axios.get("/get/events", { headers: { Authorization: `Bearer ${token}` } });
 

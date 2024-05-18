@@ -85,7 +85,6 @@ export const UserEventsProvider = ({ children }) => {
         getMyEventsController,
       }}
     >
-      {" "}
       {children}
     </UserEventContext.Provider>
   );

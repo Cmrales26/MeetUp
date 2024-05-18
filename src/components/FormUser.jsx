@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import {
@@ -11,61 +11,118 @@ import {
   Typography,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import { useUserAuth } from "../context/AuthContex";
 
-const FormUser = ({ Create }) => {
-  const initialValues = {
-    name: "",
-    lastname: "",
-    bio: "",
-    birth: "",
-    email: "",
-    phone: "",
-    password: "",
-  };
+const FormUser = ({ Create, IsEditing, user, UpdateUser }) => {
+  const { isAuth, loading } = useUserAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!IsEditing && isAuth) {
+        navigate("/create");
+      }
+    }
+  }, [IsEditing, loading, isAuth, navigate]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const navigate = useNavigate();
-
-  const validationSchema = yup.object({
-    name: yup.string().required("Name is required").trim(),
-    lastname: yup.string().required("Lastname is required").trim(),
-    bio: yup
-      .string()
-      .required("Bio is required")
-      .min(20, "Bio must be at least 20 characters")
-      .max(250, "Bio must be at most 250 characters")
-      .trim(),
-    birth: yup
-      .date()
-      .default(() => new Date())
-      .required("Birthdate is required"),
-    email: yup
-      .string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    phone: yup
-      .number()
-      .required("Phone number is required")
-      .positive()
-      .integer(),
-    password: yup
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required")
-      .trim(),
-  });
+  const validationSchema =
+    IsEditing && user
+      ? yup.object({
+          name: yup.string().required("Name is required").trim(),
+          lastname: yup.string().required("Lastname is required").trim(),
+          bio: yup
+            .string()
+            .required("Bio is required")
+            .min(20, "Bio must be at least 20 characters")
+            .max(250, "Bio must be at most 250 characters")
+            .trim(),
+          birth: yup
+            .date()
+            .default(() => new Date())
+            .required("Birthdate is required"),
+          email: yup
+            .string()
+            .email("Invalid email format")
+            .required("Email is required"),
+          phone: yup
+            .number()
+            .required("Phone number is required")
+            .positive()
+            .integer(),
+        })
+      : yup.object({
+          name: yup.string().required("Name is required").trim(),
+          lastname: yup.string().required("Lastname is required").trim(),
+          bio: yup
+            .string()
+            .required("Bio is required")
+            .min(20, "Bio must be at least 20 characters")
+            .max(250, "Bio must be at most 250 characters")
+            .trim(),
+          birth: yup
+            .date()
+            .default(() => new Date())
+            .required("Birthdate is required"),
+          email: yup
+            .string()
+            .email("Invalid email format")
+            .required("Email is required"),
+          phone: yup
+            .number()
+            .required("Phone number is required")
+            .positive()
+            .integer(),
+          password: yup
+            .string()
+            .min(6, "Password must be at least 6 characters")
+            .required("Password is required")
+            .trim(),
+        });
 
   const handleSubmit = async (values) => {
-    let res = await Create(values);
-    console.log(res);
-    if (res.status === 201) {
-      // TODO: MEJORAR EL mensaje de alerta
-      alert("User created");
-      navigate("/login");
+    if (!IsEditing) {
+      let res = await Create(values);
+      console.log(res);
+      if (res.status === 201) {
+        // TODO: IMPROVE THE ALERT
+        alert("User created");
+        navigate("/login");
+      }
+    } else {
+      let res = await UpdateUser(values, user.UserID);
+      if (res.status === 200) {
+        // TODO: IMPROVE THE ALERT
+        alert("User updated");
+        window.location.href = "/profile";
+      }
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  const initialValues =
+    IsEditing && user
+      ? {
+          name: user.Name,
+          lastname: user.LastName,
+          bio: user.Bio,
+          birth: user.BirthDate,
+          email: user.Email,
+          phone: user.Phone,
+        }
+      : {
+          name: "",
+          lastname: "",
+          bio: "",
+          birth: "",
+          email: "",
+          phone: "",
+          password: "",
+        };
 
   return (
     <Box>
@@ -176,9 +233,11 @@ const FormUser = ({ Create }) => {
                   name="email"
                   error={touched.email && Boolean(errors.email)}
                   helperText={touched.email && errors.email}
+                  disabled={IsEditing ? true : false}
                   sx={{
                     marginBottom: 2,
                     "& .MuiFormLabel-root": { color: "white" },
+                    "& .Mui-disabled": { color: "white" },
                   }}
                 />
               </Grid>
@@ -202,24 +261,27 @@ const FormUser = ({ Create }) => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  variant="filled"
-                  fullWidth
-                  type="password"
-                  label="Password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.password}
-                  name="password"
-                  error={touched.password && Boolean(errors.password)}
-                  helperText={touched.password && errors.password}
-                  sx={{
-                    marginBottom: 2,
-                    "& .MuiFormLabel-root": { color: "white" },
-                  }}
-                />
-              </Grid>
+              {IsEditing ? null : (
+                <Grid item xs={12}>
+                  <TextField
+                    variant="filled"
+                    fullWidth
+                    type="password"
+                    label="Password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password}
+                    name="password"
+                    error={touched.password && Boolean(errors.password)}
+                    helperText={touched.password && errors.password}
+                    sx={{
+                      marginBottom: 2,
+                      "& .MuiFormLabel-root": { color: "white" },
+                    }}
+                  />
+                </Grid>
+              )}
+
               <Box
                 width={"100%"}
                 display={"flex"}
@@ -237,7 +299,7 @@ const FormUser = ({ Create }) => {
                 </Typography>
               </Box>
               <Button variant="contained" type="submit" fullWidth>
-                Register
+                {IsEditing ? "Update" : "Register"}
               </Button>
             </Grid>
           </form>

@@ -1,19 +1,19 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContex";
 import Navbar from "../components/Navbar";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useUserEvents } from "../context/UserEventContext";
 import CakeIcon from "@mui/icons-material/Cake";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
-import EditIcon from "@mui/icons-material/Edit";
-import LogoutIcon from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MyEvents from "../components/MyEvents";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { isAuth, user, loading, LogOutController } = useUserAuth();
   const { myEvents, getMyEventsController } = useUserEvents();
+
   useEffect(() => {
     if (!loading) {
       if (!isAuth) {
@@ -24,7 +24,7 @@ const Profile = () => {
     if (user.rol !== undefined && user.rol == "business") {
       navigate("/profile/business");
     }
-  }, [isAuth, loading]);
+  }, [isAuth, loading, user]);
 
   useEffect(() => {
     getMyEventsController();
@@ -57,26 +57,17 @@ const Profile = () => {
         py={6}
         sx={{ backgroundColor: "#1c172e" }}
       >
-        <Box display={"flex"}>
+        <Box display={"flex"} alignItems={"center"}>
           <Typography variant="h4" fontWeight={"Bold"}>
             {user.Name} {user.LastName}{" "}
           </Typography>
-          <Stack direction="row" spacing={2} ml={2}>
-            <Button variant="contained" color="info" startIcon={<EditIcon />}>
-              {" "}
-              Edit Information
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              startIcon={<LogoutIcon />}
-              onClick={() => {
-                logOut();
-              }}
-            >
-              Log Out
-            </Button>
-          </Stack>
+
+          <Link to={"/Config"} style={{ color: "#fafafa" }}>
+            <ManageAccountsIcon
+              sx={{ ml: 1, fontSize: 35, mt: 0.5 }}
+              titleAccess="Account Configuration"
+            />
+          </Link>
         </Box>
 
         <Box display={"flex"} gap={3} mt={2}>

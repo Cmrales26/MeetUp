@@ -1,5 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import ExploreIcon from "@mui/icons-material/Explore";
+import DateRangeIcon from "@mui/icons-material/DateRange";
+import PersonIcon from "@mui/icons-material/Person";
 
 const Navbar = ({ where }) => {
   return (
@@ -13,24 +16,34 @@ const Navbar = ({ where }) => {
       </Box>
       <Box display={"flex"} alignItems={"center"}>
         <ul style={{ display: "Flex", gap: 20 }}>
-          <Link
-            to={"/Events"}
-            style={{ textDecoration: "none", color: "#fafafa" }}
-          >
-            Explore
-          </Link>
-          <Link
-            to={"/MyEvents"}
-            style={{ textDecoration: "none", color: "#fafafa" }}
-          >
-            My Events
-          </Link>
-          <Link
-            to={"/profile"}
-            style={{ textDecoration: "none", color: "#fafafa" }}
-          >
-            Profile
-          </Link>
+          <Box alignItems={"center"} display={"flex"} gap={1}>
+            <Link
+              to={"/Events"}
+              style={{ textDecoration: "none", color: "#fafafa" }}
+            >
+              Explore
+            </Link>
+            <ExploreIcon />
+          </Box>
+
+          <Box alignItems={"center"} display={"flex"} gap={1}>
+            <Link
+              to={"/MyEvents"}
+              style={{ textDecoration: "none", color: "#fafafa" }}
+            >
+              My Events
+            </Link>
+            <DateRangeIcon />
+          </Box>
+          <Box alignItems={"center"} display={"flex"} gap={1}>
+            <Link
+              to={"/profile"}
+              style={{ textDecoration: "none", color: "#fafafa" }}
+            >
+              Profile
+            </Link>
+            <PersonIcon />
+          </Box>
         </ul>
       </Box>
     </Box>

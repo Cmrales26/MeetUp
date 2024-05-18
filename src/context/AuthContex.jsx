@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { CreateRequest, LoginRequest } from "../api/user/user";
+import {
+  ChangePasswordRequest,
+  CreateRequest,
+  LoginRequest,
+  UpdateRequest,
+} from "../api/user/user";
 import {
   CreateBusinessRequest,
   LoginBusinessRequest,
@@ -110,6 +115,27 @@ export const UserAuthProvider = ({ children }) => {
     }
   };
 
+  const UpdateUser = async (data, UserId) => {
+    try {
+      const res = await UpdateRequest(data, UserId);
+      cookies.set("token", res.data.token);
+      return res;
+    } catch (error) {
+      setError(error.response.data.message);
+      return error.response.data.message;
+    }
+  };
+
+  const ChangeUserPass = async (data) => {
+    try {
+      const res = await ChangePasswordRequest(data);
+      return res;
+    } catch (error) {
+      setError(error.response.data.message);
+      return error.response.data.message;
+    }
+  };
+
   const LogOutController = async () => {
     try {
       const res = await LogOut();
@@ -137,6 +163,8 @@ export const UserAuthProvider = ({ children }) => {
         LogOutController,
         Create,
         CreateBusiness,
+        UpdateUser,
+        ChangeUserPass,
       }}
     >
       {" "}
