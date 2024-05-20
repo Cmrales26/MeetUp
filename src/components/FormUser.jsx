@@ -85,7 +85,6 @@ const FormUser = ({ Create, IsEditing, user, UpdateUser }) => {
   const handleSubmit = async (values) => {
     if (!IsEditing) {
       let res = await Create(values);
-      console.log(res);
       if (res.status === 201) {
         // TODO: IMPROVE THE ALERT
         alert("User created");

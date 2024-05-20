@@ -6,8 +6,10 @@ import {
   UpdateRequest,
 } from "../api/user/user";
 import {
+  ChangeBPasswordRequest,
   CreateBusinessRequest,
   LoginBusinessRequest,
+  UpdateBusinessRequest,
 } from "../api/Business/business";
 import { CheckLogin, LogOut } from "../api/auth/auth";
 import Cookies from "universal-cookie";
@@ -30,12 +32,14 @@ export const UserAuthProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  let token = cookies.get("token");
+
   useEffect(() => {
     async function ValidateToken() {
-      let token = cookies.get("token");
       if (!token) {
         setIsAuth(false);
         setLoading(false);
+        cookies.remove("token", { path: "/" });
         return setUser("");
       }
       try {
@@ -46,6 +50,7 @@ export const UserAuthProvider = ({ children }) => {
         if (!res.data) {
           setIsAuth(false);
           setLoading(false);
+          cookies.remove("token", { path: "/" });
           return setUser("");
         }
         setUser(res.data);
@@ -58,7 +63,7 @@ export const UserAuthProvider = ({ children }) => {
       }
     }
     ValidateToken();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (error != false) {
@@ -74,7 +79,8 @@ export const UserAuthProvider = ({ children }) => {
       const res = await LoginRequest(user);
       setUser(res.data);
       setIsAuth(true);
-      cookies.set("token", res.data.token);
+      cookies.remove("token");
+      cookies.set("token", res.data.token, { path: "/" });
       return res;
     } catch (error) {
       setError(error.response.data.message);
@@ -87,7 +93,8 @@ export const UserAuthProvider = ({ children }) => {
       const res = await LoginBusinessRequest(user);
       setUser(res.data);
       setIsAuth(true);
-      cookies.set("token", res.data.token);
+      cookies.remove("token");
+      cookies.set("token", res.data.token, { path: "/" });
       return res;
     } catch (error) {
       setError(error.response.data.message);
@@ -118,7 +125,20 @@ export const UserAuthProvider = ({ children }) => {
   const UpdateUser = async (data, UserId) => {
     try {
       const res = await UpdateRequest(data, UserId);
-      cookies.set("token", res.data.token);
+      cookies.remove("token");
+      cookies.set("token", res.data.token, { path: "/" });
+      return res;
+    } catch (error) {
+      setError(error.response.data.message);
+      return error.response.data.message;
+    }
+  };
+
+  const updateBusiness = async (data, BusinessId) => {
+    try {
+      const res = await UpdateBusinessRequest(BusinessId, data);
+      cookies.remove("token");
+      cookies.set("token", res.data.token, { path: "/" });
       return res;
     } catch (error) {
       setError(error.response.data.message);
@@ -136,14 +156,26 @@ export const UserAuthProvider = ({ children }) => {
     }
   };
 
+  const ChangeBusinessPass = async (data) => {
+    try {
+      const res = await ChangeBPasswordRequest(data);
+      return res;
+    } catch (error) {
+      console.log(error);
+      setError(error.response.data.message);
+      return error.response.data.message;
+    }
+  };
+
   const LogOutController = async () => {
     try {
       const res = await LogOut();
       if (res.status === 200) {
-        cookies.remove("token");
+        cookies.remove("token", { path: "/" });
         setUser("");
         setIsAuth(false);
         setLoading(false);
+        cookies.remove("token");
       }
       return res.status;
     } catch (error) {
@@ -165,9 +197,10 @@ export const UserAuthProvider = ({ children }) => {
         CreateBusiness,
         UpdateUser,
         ChangeUserPass,
+        updateBusiness,
+        ChangeBusinessPass,
       }}
     >
-      {" "}
       {children}
     </UserAuthContext.Provider>
   );

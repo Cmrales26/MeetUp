@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContex";
 import EditIcon from "@mui/icons-material/Edit";
@@ -8,7 +8,9 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 const Configuration = () => {
-  const { isAuth, loading, LogOutController } = useUserAuth();
+  const { isAuth, loading, LogOutController, user } = useUserAuth();
+  const [isBusiness, setIsBusiness] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,11 +19,17 @@ const Configuration = () => {
         navigate("/");
       }
     }
+    if (user.rol !== undefined && user.rol === "business") {
+      setIsBusiness(true);
+    } else {
+      setIsBusiness(false);
+    }
   }, [isAuth, loading]);
 
   const logOut = () => {
     LogOutController();
   };
+
   return (
     <Box
       display={"flex"}
@@ -36,14 +44,20 @@ const Configuration = () => {
         <Button
           sx={{ textAlign: "left", width: "100%" }}
           onClick={() => {
-            navigate("/profile/edit", { state: { IsEditing: true } });
+            if (isBusiness) {
+              navigate("/profile/edit/business", {
+                state: { IsEditing: true },
+              });
+            } else {
+              navigate("/profile/edit", { state: { IsEditing: true } });
+            }
           }}
         >
           <Box bgcolor={"#231e36"} p={2} mt={2} borderRadius={1} width={"100%"}>
             <Box display={"flex"}>
               <EditIcon sx={{ mr: 1, color: "#f5b400" }} />
               <Typography variant="button" color={"#f5b400"}>
-                Edit User Info
+                Edit {isBusiness ? "business" : "user"} Info
               </Typography>
             </Box>
             <Typography variant="body2" color="#fafafa" ml={4} sx={{ mt: 1 }}>
@@ -73,7 +87,7 @@ const Configuration = () => {
           </Box>
         </Button>
 
-        <Button
+        {/* <Button
           fullWidth
           sx={{ textAlign: "left" }}
           onClick={() => {
@@ -97,7 +111,7 @@ const Configuration = () => {
               </Typography>
             </Link>
           </Box>
-        </Button>
+        </Button> */}
 
         <hr style={{ marginTop: "1rem" }} />
         <Button

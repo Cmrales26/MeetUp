@@ -26,7 +26,7 @@ const Event = () => {
         navigate("/");
       }
     }
-  }, [isAuth, loading]);
+  }, [loading]);
 
   useEffect(() => {
     const fetchEvent = async () => {

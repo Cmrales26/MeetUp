@@ -20,7 +20,7 @@ const Home = () => {
     if (user.rol !== undefined && user.rol == "business") {
       navigate("/home/business");
     }
-  }, [isAuth]);
+  }, []);
 
   useEffect(() => {
     getEventsController();

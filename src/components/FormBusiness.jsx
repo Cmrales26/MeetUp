@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import {
@@ -11,48 +11,81 @@ import {
   Typography,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import { useUserAuth } from "../context/AuthContex";
 
-const FormBusiness = ({ CreateBusiness }) => {
-  const initialValues = {
-    name: "",
-    bio: "",
-    fundationdate: "",
-    password: "",
-  };
+const FormBusiness = ({ CreateBusiness, IsEditing, user, updateBusiness }) => {
+  const { isAuth, loading } = useUserAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!IsEditing && isAuth) {
+        navigate("/create");
+      }
+    }
+  }, [IsEditing, loading, isAuth, navigate]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const navigate = useNavigate();
-
-  const validationSchema = yup.object({
-    name: yup.string().required("Name is required").trim(),
-    bio: yup
-      .string()
-      .required("Bio is required")
-      .min(20, "Bio must be at least 20 characters")
-      .max(250, "Bio must be at most 250 characters")
-      .trim(),
-    fundationdate: yup
-      .date()
-      .default(() => new Date())
-      .required("Birthdate is required"),
-    password: yup
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required")
-      .trim(),
-  });
+  const validationSchema =
+    IsEditing && user
+      ? yup.object({
+          name: yup.string().required("Name is required").trim(),
+          bio: yup
+            .string()
+            .required("Bio is required")
+            .min(20, "Bio must be at least 20 characters")
+            .max(250, "Bio must be at most 250 characters")
+            .trim(),
+          fundationdate: yup
+            .date()
+            .default(() => new Date())
+            .required("Foundation date is required"),
+        })
+      : yup.object({
+          name: yup.string().required("Name is required").trim(),
+          bio: yup
+            .string()
+            .required("Bio is required")
+            .min(20, "Bio must be at least 20 characters")
+            .max(250, "Bio must be at most 250 characters")
+            .trim(),
+          fundationdate: yup
+            .date()
+            .default(() => new Date())
+            .required("Foundation date is required"),
+          password: yup
+            .string()
+            .min(6, "Password must be at least 6 characters")
+            .required("Password is required")
+            .trim(),
+        });
 
   const handleSubmit = async (values) => {
-    let res = await CreateBusiness(values);
-    console.log(res);
-    if (res.status === 201) {
-      // TODO: MEJORAR EL mensaje de alerta
-      alert("Business successfully created");
-      navigate("/login");
+    if (!IsEditing) {
+      let res = await CreateBusiness(values);
+      if (res.status === 201) {
+        alert("Business successfully created");
+        navigate("/login");
+      }
+    } else {
+      let res = await updateBusiness(values, user.BusinessID);
+      if (res.status === 200) {
+        alert("Business updated");
+        window.location.href = "/home/business";
+      }
     }
   };
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  const initialValues =
+    IsEditing && user
+      ? { name: user.Name, bio: user.Bio, fundationdate: user.FundationDate }
+      : { name: "", bio: "", fundationdate: "", password: "" };
 
   return (
     <Box>
@@ -80,6 +113,7 @@ const FormBusiness = ({ CreateBusiness }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.name}
+                  disabled={IsEditing ? true : false}
                   name="name"
                   error={touched.name && Boolean(errors.name)}
                   helperText={touched.name && errors.name}
@@ -120,10 +154,10 @@ const FormBusiness = ({ CreateBusiness }) => {
                   label="Foundation Date"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.birth}
+                  value={values.fundationdate}
                   name="fundationdate"
-                  error={touched.birth && Boolean(errors.birth)}
-                  helperText={touched.birth && errors.birth}
+                  error={touched.fundationdate && Boolean(errors.fundationdate)}
+                  helperText={touched.fundationdate && errors.fundationdate}
                   sx={{
                     marginBottom: 2,
                     "& .MuiFormLabel-root": { color: "white" },
@@ -133,42 +167,47 @@ const FormBusiness = ({ CreateBusiness }) => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  variant="filled"
-                  fullWidth
-                  type="password"
-                  label="Password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.password}
-                  name="password"
-                  error={touched.password && Boolean(errors.password)}
-                  helperText={touched.password && errors.password}
-                  sx={{
-                    marginBottom: 2,
-                    "& .MuiFormLabel-root": { color: "white" },
-                  }}
-                />
-              </Grid>
+              {IsEditing ? null : (
+                <Grid item xs={12}>
+                  <TextField
+                    variant="filled"
+                    fullWidth
+                    type="password"
+                    label="Password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password}
+                    name="password"
+                    error={touched.password && Boolean(errors.password)}
+                    helperText={touched.password && errors.password}
+                    sx={{
+                      marginBottom: 2,
+                      "& .MuiFormLabel-root": { color: "white" },
+                    }}
+                  />
+                </Grid>
+              )}
+
               <Box
                 width={"100%"}
                 display={"flex"}
                 justifyContent={"flex-end"}
                 mb={2}
               >
-                <Typography variant="caption">
-                  Already have an account?{" "}
-                  <Link
-                    to={"/login"}
-                    style={{ textDecoration: "none", color: "#1565c0" }}
-                  >
-                    Login
-                  </Link>
-                </Typography>
+                {IsEditing ? null : (
+                  <Typography variant="caption">
+                    Already have an account?{" "}
+                    <Link
+                      to={"/login"}
+                      style={{ textDecoration: "none", color: "#1565c0" }}
+                    >
+                      Login
+                    </Link>
+                  </Typography>
+                )}
               </Box>
               <Button variant="contained" type="submit" fullWidth>
-                Register Business
+                {IsEditing ? "Update Business" : "Register Business"}
               </Button>
             </Grid>
           </form>

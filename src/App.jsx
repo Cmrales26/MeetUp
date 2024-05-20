@@ -15,6 +15,7 @@ import UpdateUser from "./screens/UpdateUser";
 import Configuration from "./screens/Configuration";
 import ChangePass from "./screens/ChangePass";
 import HomeBusiness from "./screens/Business/HomeBusiness";
+import UpdateBusiness from "./screens/Business/UpdateBusiness";
 
 function App() {
   return (
@@ -35,6 +36,10 @@ function App() {
                 <Route path="/event/:eventId" element={<Event />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/edit" element={<UpdateUser />} />
+                <Route
+                  path="/profile/edit/business"
+                  element={<UpdateBusiness />}
+                />
                 <Route path="/Events" element={<Events />} />
                 <Route path="/MyEvents" element={<MyEventsScreen />} />
                 <Route path="/Config" element={<Configuration />} />

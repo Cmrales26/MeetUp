@@ -6,6 +6,12 @@ export const LoginBusinessRequest = (data) =>
 export const CreateBusinessRequest = (data) =>
   axios.post("/create/business", data);
 
+export const UpdateBusinessRequest = (id, data) =>
+  axios.patch(`/edit/business/${id}`, data);
+
+export const ChangeBPasswordRequest = (data) =>
+  axios.post("/change/pass/business", data);
+
 export const getEventsRequest = (token) =>
   axios.get("/Business/my/events", {
     headers: { Authorization: `Bearer ${token}` },

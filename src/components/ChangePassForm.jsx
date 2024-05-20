@@ -2,18 +2,32 @@ import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-const ChangePassForm = ({ ChangeUserPass, user }) => {
+const ChangePassForm = ({ ChangeUserPass, user, ChangeBusinessPass }) => {
   const navigate = useNavigate();
-  const handleSubmit = async (values) => {
-    let data = {
-      ...values,
-      email: user.Email,
-    };
-    let res = await ChangeUserPass(data);
 
-    if (res.status !== undefined && res.status === 200) {
-      alert("Password Change");
-      navigate("/home");
+  const handleSubmit = async (values) => {
+    if (user.rol !== "business") {
+      let data = {
+        ...values,
+        email: user.Email,
+      };
+      let res = await ChangeUserPass(data);
+
+      if (res.status !== undefined && res.status === 200) {
+        alert("User Password Change");
+        navigate("/home");
+      }
+    } else {
+      let data = {
+        ...values,
+        name: user.Name,
+      };
+      let res = await ChangeBusinessPass(data);
+
+      if (res.status !== undefined && res.status === 200) {
+        alert("Business Password Change");
+        navigate("/");
+      }
     }
   };
   const initialValue = {

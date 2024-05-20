@@ -34,7 +34,7 @@ export const BusinessEventProvider = ({ children }) => {
         SetEvent(res.data);
       }
     } catch (error) {
-      console.log(error);
+      return error.response;
     }
   };
 
@@ -54,7 +54,7 @@ export const BusinessEventProvider = ({ children }) => {
       const res = await updateEventRequest(id, data, token);
       return res;
     } catch (error) {
-      console.log(error.response);
+      return error.response;
     }
   };
 
@@ -77,6 +77,7 @@ export const BusinessEventProvider = ({ children }) => {
       console.log(error.response);
     }
   };
+
   return (
     <BusinessEventContext.Provider
       value={{

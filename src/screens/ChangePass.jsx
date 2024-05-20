@@ -4,7 +4,8 @@ import ChangePassForm from "../components/ChangePassForm";
 import { useUserAuth } from "../context/AuthContex";
 
 const ChangePass = () => {
-  const { ChangeUserPass, user, isAuth, loading, error } = useUserAuth();
+  const { ChangeUserPass, ChangeBusinessPass, user, isAuth, loading, error } =
+    useUserAuth();
 
   useEffect(() => {
     if (!loading) {
@@ -34,7 +35,11 @@ const ChangePass = () => {
           </Box>
         ) : null}
         <h2>Change Password</h2>
-        <ChangePassForm ChangeUserPass={ChangeUserPass} user={user} />
+        <ChangePassForm
+          ChangeUserPass={ChangeUserPass}
+          ChangeBusinessPass={ChangeBusinessPass}
+          user={user}
+        />
       </Box>
     </Box>
   );

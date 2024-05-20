@@ -18,7 +18,7 @@ const Events = () => {
         navigate("/");
       }
     }
-  }, [isAuth, loading]);
+  }, [loading]);
 
   useEffect(() => {
     getEventsController();
