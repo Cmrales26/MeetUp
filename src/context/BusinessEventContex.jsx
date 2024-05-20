@@ -1,5 +1,11 @@
 import { createContext, useContext, useState } from "react";
-import { CreateEventRequest, getEventsRequest } from "../api/Business/business";
+import {
+  CreateEventRequest,
+  DeleteEventRequest,
+  ReactivateEventRequest,
+  getEventsRequest,
+  updateEventRequest,
+} from "../api/Business/business";
 import Cookies from "universal-cookie";
 
 export const BusinessEventContext = createContext();
@@ -18,6 +24,7 @@ const cookies = new Cookies();
 
 export const BusinessEventProvider = ({ children }) => {
   const [events, SetEvent] = useState([]);
+  const [editEvent, setEditEvent] = useState([]);
 
   const getEventController = async () => {
     let token = cookies.get("token");
@@ -33,7 +40,6 @@ export const BusinessEventProvider = ({ children }) => {
 
   const CreateEventController = async (data) => {
     let token = cookies.get("token");
-    console.log(token);
     try {
       const res = await CreateEventRequest(token, data);
       return res;
@@ -41,9 +47,48 @@ export const BusinessEventProvider = ({ children }) => {
       return error.response;
     }
   };
+
+  const EditEventController = async (id, data) => {
+    let token = cookies.get("token");
+    try {
+      const res = await updateEventRequest(id, data, token);
+      return res;
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const deleteEventController = async (id) => {
+    let token = cookies.get("token");
+    try {
+      const res = await DeleteEventRequest(id, token);
+      return res;
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+  const reactivateEventController = async (id) => {
+    let token = cookies.get("token");
+    try {
+      const res = await ReactivateEventRequest(id, token);
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
   return (
     <BusinessEventContext.Provider
-      value={{ events, getEventController, CreateEventController }}
+      value={{
+        events,
+        editEvent,
+        getEventController,
+        CreateEventController,
+        setEditEvent,
+        EditEventController,
+        deleteEventController,
+        reactivateEventController,
+      }}
     >
       {children}
     </BusinessEventContext.Provider>

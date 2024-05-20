@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Grid,
   Table,
   TableBody,
   TableCell,
@@ -12,15 +11,33 @@ import {
   TablePagination,
   Paper,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContentText,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ReplayIcon from "@mui/icons-material/Replay";
 
-const EventsTable = ({ events }) => {
+const EventsTable = ({
+  events,
+  setIsEditing,
+  setEditEvent,
+  deleteEventController,
+  reactivateEventController,
+}) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("date");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [open, setOpen] = React.useState(false);
+  const [deleteEvent, setDeleteEvent] = useState([]);
+  const [reactivateEvent, setReactivateEvent] = useState([]);
+  const [isReactive, setIsReactive] = useState(false);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -38,11 +55,30 @@ const EventsTable = ({ events }) => {
   };
 
   const handleEdit = (event) => {
-    console.log("Edit event:", event);
+    setIsEditing(true);
+    setEditEvent(event);
   };
 
-  const handleDelete = (event) => {
-    console.log("Delete event:", event);
+  const handleDelete = async (event) => {
+    let res = await deleteEventController(event.id);
+    if (res.status === 200) {
+      window.location.reload();
+    }
+  };
+
+  const handleReactivate = async (event) => {
+    let res = await reactivateEventController(event.id);
+    if (res.status === 200) {
+      window.location.reload();
+    }
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const sortedEvents = [...events].sort((a, b) => {
@@ -133,15 +169,35 @@ const EventsTable = ({ events }) => {
                   <IconButton
                     onClick={() => handleEdit(event)}
                     sx={{ color: "#f5b400" }}
+                    title="Edit Event"
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton
-                    onClick={() => handleDelete(event)}
-                    sx={{ color: "#f5b400" }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  {event.status ? (
+                    <IconButton
+                      onClick={() => {
+                        setIsReactive(false);
+                        setDeleteEvent(event);
+                        handleClickOpen();
+                      }}
+                      sx={{ color: "#f5b400" }}
+                      title="Delete Event"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => {
+                        setReactivateEvent(event);
+                        setIsReactive(true);
+                        handleClickOpen();
+                      }}
+                      sx={{ color: "#f5b400" }}
+                      title="Reactivate Event"
+                    >
+                      <ReplayIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -158,6 +214,48 @@ const EventsTable = ({ events }) => {
           sx={{ color: "#fafafa" }}
         />
       </TableContainer>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        PaperProps={{
+          style: { background: "#1c172e", color: "#fafafa" },
+        }}
+      >
+        <DialogTitle id="alert-dialog-title">
+          Are you sure you want to {isReactive ? "reactivate" : "delete"} the
+          event?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" color={"#fafafa"}>
+            <Typography id="alert-dialog-description" color={"#fafafa"}>
+              Are you sure you want to {isReactive ? "reactivate" : "delete"}{" "}
+              the event '{isReactive ? reactivateEvent.name : deleteEvent.name}
+              '?
+            </Typography>
+            <Typography color={"gray"} variant="subtitle2" mt={2}>
+              ref: {isReactive ? reactivateEvent.id : deleteEvent.id}
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button
+            onClick={() => {
+              if (!isReactive) {
+                handleDelete(deleteEvent);
+              } else {
+                handleReactivate(reactivateEvent);
+              }
+            }}
+            autoFocus
+          >
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

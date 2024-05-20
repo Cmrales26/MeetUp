@@ -1,27 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
-import {
-  Button,
-  Grid,
-  TextField,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 
-const EventForm = ({ IsEditing, CreateEventController }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+const EventForm = ({
+  IsEditing,
+  CreateEventController,
+  editEvent,
+  EditEventController,
+}) => {
+  const [initialValues, setInitialValues] = useState({
+    name: "",
+    description: "",
+    date: "",
+    time: "",
+    location: "",
+  });
 
-  const initialValues = IsEditing
-    ? {
+  useEffect(() => {
+    if (IsEditing && editEvent) {
+      setInitialValues({
+        name: editEvent.name,
+        description: editEvent.description,
+        date: editEvent.date,
+        time: editEvent.time,
+        location: editEvent.location,
+      });
+    } else {
+      setInitialValues({
         name: "",
         description: "",
         date: "",
         time: "",
         location: "",
-      }
-    : { name: "", description: "", date: "", time: "", location: "" };
+      });
+    }
+  }, [IsEditing, editEvent]);
 
   const validationSchema = yup.object({
     name: yup.string().required().max(50),
@@ -39,10 +53,16 @@ const EventForm = ({ IsEditing, CreateEventController }) => {
   });
 
   const handelSubmit = async (values) => {
-    let res = await CreateEventController(values);
-    console.log(res);
-    if (res.status !== undefined && res.status === 201) {
-      window.location.reload();
+    if (!IsEditing) {
+      let res = await CreateEventController(values);
+      if (res.status !== undefined && res.status === 201) {
+        window.location.reload();
+      }
+    } else {
+      let res = await EditEventController(editEvent.id, values);
+      if (res.status !== undefined && res.status === 200) {
+        window.location.reload();
+      }
     }
   };
 
@@ -51,6 +71,7 @@ const EventForm = ({ IsEditing, CreateEventController }) => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handelSubmit}
+      enableReinitialize
     >
       {({
         values,
