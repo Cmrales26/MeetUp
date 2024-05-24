@@ -21,7 +21,7 @@ const UpdateUser = () => {
 
   return (
     <Box
-      height={"75vh"}
+      height={"85vh"}
       display={"flex"}
       flexDirection={"column"}
       mt={5}

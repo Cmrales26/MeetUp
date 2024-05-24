@@ -49,7 +49,7 @@ const Profile = () => {
   }
 
   return (
-    <Box>
+    <Box height={"100vh"}>
       <Navbar where={"Profile"} />
       <Box
         className="ProfileHeader"
@@ -89,13 +89,6 @@ const Profile = () => {
           About me
         </Typography>
         <Typography variant="body1">{user.Bio}</Typography>
-
-        <Box>
-          <Typography variant="h5" fontWeight={"bold"} mt={4}>
-            My Interested
-          </Typography>
-          <Box>Map de Topics</Box>
-        </Box>
 
         <Box>
           <Typography variant="h5" fontWeight={"bold"} mt={4}>
