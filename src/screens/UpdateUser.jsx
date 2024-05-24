@@ -21,10 +21,10 @@ const UpdateUser = () => {
 
   return (
     <Box
-      height={"85vh"}
       display={"flex"}
       flexDirection={"column"}
       mt={5}
+      mb={5}
       alignItems={"center"}
     >
       <Box p={4} bgcolor={"#1c172e"} borderRadius={1} width={800}>
