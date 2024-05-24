@@ -9,7 +9,7 @@ const Create = () => {
   const { Create, error, CreateBusiness } = useUserAuth();
   return (
     <Box
-      height={"75vh"}
+      height={"100vh"}
       display={"flex"}
       flexDirection={"column"}
       mt={5}
