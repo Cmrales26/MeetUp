@@ -16,6 +16,7 @@ import Configuration from "./screens/Configuration";
 import ChangePass from "./screens/ChangePass";
 import HomeBusiness from "./screens/Business/HomeBusiness";
 import UpdateBusiness from "./screens/Business/UpdateBusiness";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             </BusinessEventProvider>
           </UserEventsProvider>
         </UserAuthProvider>
+        <Footer />
       </main>
     </div>
   );

@@ -57,12 +57,6 @@ const Home = () => {
             ))}
           </Box>
         </Box>
-
-        <Box mt={5}>
-          <Typography fontWeight={"bold"} variant="h5">
-            Categories
-          </Typography>
-        </Box>
       </Box>
     </Box>
   );

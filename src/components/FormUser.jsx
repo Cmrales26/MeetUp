@@ -86,14 +86,12 @@ const FormUser = ({ Create, IsEditing, user, UpdateUser }) => {
     if (!IsEditing) {
       let res = await Create(values);
       if (res.status === 201) {
-        // TODO: IMPROVE THE ALERT
         alert("User created");
         navigate("/login");
       }
     } else {
       let res = await UpdateUser(values, user.UserID);
       if (res.status === 200) {
-        // TODO: IMPROVE THE ALERT
         alert("User updated");
         window.location.href = "/profile";
       }
